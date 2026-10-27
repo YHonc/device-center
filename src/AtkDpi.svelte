@@ -1,0 +1,35 @@
+<script lang="ts">
+  import {command} from './api';
+  import {createRequestGate} from './requestGate.js';
+  import {onDestroy} from 'svelte';
+  import {snapDpi,dpiKeyboardValue,isDpiAdjustmentKey} from './dpiInput.js';
+  interface DpiSnapshot {deviceId:string;model:string;sensor:string;stateToken:string;currentLevel:number;levelCount:number;levels:{level:number;xDpi:number;yDpi:number;editable:boolean}[];min:number;max:number;stepSegments:{until:number;step:number}[]}
+  let {deviceId}:{deviceId:string|null}=$props();
+  let snapshot=$state<DpiSnapshot|null>(null);let level=$state(0);let x=$state(0);let y=$state(0);let busy=$state(false);let error=$state('');let success=$state('');let confirmed=$state(false);let loadedId='';const requests=createRequestGate();
+  const original=$derived(snapshot?.levels.find(item=>item.level===level));
+  const dirty=$derived(!!original&&(x!==original.xDpi||y!==original.yDpi));
+  function valid(value:number){if(!snapshot||!Number.isInteger(value)||value<snapshot.min||value>snapshot.max)return false;const step=snapshot.stepSegments.find(s=>value<=s.until)?.step;return !!step&&value%step===0;}
+  const invalid=$derived(!valid(x)||!valid(y));
+  function choose(value:number){level=value;const item=snapshot?.levels.find(v=>v.level===level);x=item?.xDpi??0;y=item?.yDpi??0;success='';}
+  function adjustAxis(event:KeyboardEvent,axis:'x'|'y'){if(!snapshot||!isDpiAdjustmentKey(event,(event.currentTarget as HTMLInputElement).type as 'range'|'number'))return;const next=dpiKeyboardValue(event.key,axis==='x'?x:y,snapshot);if(next===null)return;event.preventDefault();if(axis==='x')x=next;else y=next;}
+  function accept(value:DpiSnapshot){snapshot=value;if(!value.levels.some(v=>v.level===level))level=value.currentLevel;choose(level);confirmed=true;}
+  const message=(e:unknown)=>e&&typeof e==='object'&&'message'in e?String(e.message):String(e);
+  async function read(){if(!deviceId||busy)return;const current=requests.begin();busy=true;error='';success='';try{const value=await command<DpiSnapshot>('read_atk_dpi',{deviceId});if(current())accept(value);}catch(e){if(current()){error=message(e);confirmed=false;}}finally{if(current())busy=false;}}
+  async function apply(){if(!deviceId||!snapshot||busy||!dirty||invalid||!original?.editable||!confirmed)return;const current=requests.begin();busy=true;error='';success='';try{const value=await command<DpiSnapshot>('apply_atk_dpi',{deviceId,change:{level,xDpi:x,yDpi:y,expectedState:snapshot.stateToken}});if(current()){accept(value);success='DPI 已写入并完整读回确认。';}}catch(e){if(current()){error=`${message(e)}。请重新读取核对设备状态。`;confirmed=false;}}finally{if(current())busy=false;}}
+  export function hasUnsavedChanges(){return dirty||busy;}export function isOperationPending(){return busy;}
+  $effect(()=>{if(loadedId!==(deviceId||'')){loadedId=deviceId||'';requests.invalidate();snapshot=null;busy=false;confirmed=false;if(deviceId)void read();}});
+  onDestroy(()=>requests.invalidate());
+</script>
+<div class="dpi-heading"><h3>DPI 设置</h3><p>设置传感器灵敏度，X / Y 轴可分别调整。</p></div>
+{#if snapshot}
+<div class="dpi-device-info"><span>{snapshot.sensor}</span><span>当前设备档位 {snapshot.currentLevel+1}</span></div><div class="dpi-levels" aria-label="DPI 档位">{#each snapshot.levels as item}<button class:active={level===item.level} disabled={busy||dirty} onclick={()=>choose(item.level)}><span>档位 {item.level+1}</span><strong>{item.xDpi}</strong><small>{item.xDpi===item.yDpi?'DPI':`Y ${item.yDpi}`}</small></button>{/each}</div>
+<div class="dpi-axis"><div><label for="dpi-x">X 轴 DPI</label><input type="range" aria-label="X 轴 DPI 滑条" min={snapshot.min} max={snapshot.max} step="1" value={x} onkeydown={e=>adjustAxis(e,'x')} oninput={e=>{if(snapshot)x=snapDpi(Number(e.currentTarget.value),snapshot);}} disabled={busy||!original?.editable||!confirmed}/></div><input id="dpi-x" type="number" min={snapshot.min} max={snapshot.max} step="1" bind:value={x} onkeydown={e=>adjustAxis(e,'x')} disabled={busy||!original?.editable||!confirmed}/></div>
+<div class="dpi-axis"><div><label for="dpi-y">Y 轴 DPI</label><input type="range" aria-label="Y 轴 DPI 滑条" min={snapshot.min} max={snapshot.max} step="1" value={y} onkeydown={e=>adjustAxis(e,'y')} oninput={e=>{if(snapshot)y=snapDpi(Number(e.currentTarget.value),snapshot);}} disabled={busy||!original?.editable||!confirmed}/></div><input id="dpi-y" type="number" min={snapshot.min} max={snapshot.max} step="1" bind:value={y} onkeydown={e=>adjustAxis(e,'y')} disabled={busy||!original?.editable||!confirmed}/></div>
+<p class="settings-intro">范围 {snapshot.min}–{snapshot.max}。{snapshot.stepSegments.map(s=>`${s.until} 以内步长 ${s.step}`).join('；')}。</p>
+{#if dirty}<div class="change-preview"><strong>待应用到档位 {level+1}</strong><p>X {original?.xDpi} → {x}，Y {original?.yDpi} → {y}</p></div>{/if}
+{:else}<div class="settings-empty" role="status"><strong>{busy?'正在读取 DPI 档位…':!deviceId?'连接鼠标后读取 DPI':'尚未取得 DPI 档位'}</strong><p>读取后显示设备已有档位及可用步长。</p></div>{/if}
+{#if error}<p class="message error" role="alert">{error}</p>{/if}{#if success}<p class="settings-success" role="status">{success}</p>{/if}
+<div class="settings-actions"><span role="status">{busy?'正在与设备通信…':!confirmed&&dirty?'设备状态需核对，请先撤回预览再重新读取。':invalid&&dirty?'数值须符合范围和步长':dirty?'预览尚未应用':'方向键按合法步长调整，Home / End 到首末值。'}</span><button class="secondary" disabled={!deviceId||busy||dirty} onclick={read}>重新读取</button><button class="secondary" disabled={!dirty||busy} onclick={()=>choose(level)}>撤回预览</button><button class="primary" disabled={!dirty||invalid||busy||!original?.editable||!confirmed} onclick={apply}>{busy?'等待设备确认…':'应用到设备'}</button></div>
+<style>
+ .dpi-heading h3{font-size:16px;font-weight:600;margin:0 0 8px}.dpi-heading p{font-size:12px;line-height:1.65;color:var(--muted);margin:0 0 24px}.dpi-device-info{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:16px}.dpi-levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin:16px 0 24px}.dpi-levels button{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:16px;background:var(--control);color:var(--ink);border:1px solid var(--quiet-line);border-radius:12px}.dpi-levels button.active{border-color:var(--accent);background:var(--glass-chrome,var(--control));color:var(--accent)}.dpi-levels span,.dpi-levels small{font-size:12px;font-weight:400}.dpi-levels strong{font-size:24px;line-height:1.25;font-weight:600;font-variant-numeric:tabular-nums}.dpi-axis{display:grid;grid-template-columns:minmax(0,1fr) 104px;align-items:end;gap:16px;margin:24px 0}.dpi-axis label{display:block;font-size:13px;font-weight:500;margin-bottom:12px}.dpi-axis input[type=range]{width:100%;accent-color:var(--accent)}.dpi-axis input[type=number]{width:100%;padding:8px 12px;background:var(--control);color:var(--ink);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;font-variant-numeric:tabular-nums}@media(max-width:450px){.dpi-axis{grid-template-columns:minmax(0,1fr) 88px;gap:12px}.dpi-levels{grid-template-columns:repeat(2,minmax(0,1fr))}.dpi-levels button{padding:12px}}
+</style>

@@ -1,0 +1,51 @@
+# Research snapshots and downloaded website assets; keep the app index.html.
+/references/
+/atk-source.js
+/mchose-source.js
+/atk.html
+/mchose.html
+/tauri-source.html
+
+# Dependencies, generated frontend/native output, local toolchains.
+node_modules/
+dist/
+target/
+/src-tauri/gen/
+/.tools/
+/.toolchain/
+/.rustup/
+/.cargo-home/
+/tools-local/
+*.tsbuildinfo
+*.log
+
+# Local credentials and runtime state, not checked-in app/build configuration.
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets.json
+secrets/
+/config.local.json
+/config.local.*.json
+/device-config.json
+/local-config/
+*.pfx
+*.p12
+*.key
+
+# Editors and OS files. Lockfiles intentionally remain tracked.
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Local distributions and historical UI backups.
+/releases/
+/archive/
+
+# Local agent tooling and validation output.
+/.agents/
+/artifacts/
+*.dpapi

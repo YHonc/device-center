@@ -1,0 +1,7 @@
+Use case: logo-brand
+Asset type: monochrome Windows system tray icon, companion to the original 微光 Device Center application emblem.
+Primary request: A single bold white flat symbol: a thick open circular halo crossed by one short rising beam at the upper right. Quietly suggest connected device power. Preserve the clear open-ring and beam identity; simplify it rigorously for 16 to 32 pixel use.
+Composition: one centered freestanding emblem on a square 1024x1024 canvas, occupies about 80 percent of width, evenly padded. Ring stroke is very thick, the open gap is wide and obvious, the short beam is thick, very few shapes.
+Style: solid pure white flat silhouette with clean antialiased edges. No gradients, glass, shadows, glow, gray shading, tile, thin details, or decoration.
+Background: genuinely transparent alpha, no checkerboard drawing or opaque backdrop.
+Constraints: no text, letters, numbers, logo, trademark, watermark, or multiple devices. Must remain recognizable when reduced to 16px.

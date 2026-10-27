@@ -1,0 +1,11 @@
+import { mount } from 'svelte';
+import App from './App.svelte';
+import Compact from './Compact.svelte';
+import MappingPreview from './MappingPreview.svelte';
+import LampPresetPreview from './LampPresetPreview.svelte';
+import './style.css';
+import './motion.css';
+import './refactor.css';
+import './polish.css';
+const query=new URLSearchParams(location.search);
+mount(query.has('lampPresetPreview')?LampPresetPreview:query.has('mappingPreview')?MappingPreview:query.get('view')==='compact'?Compact:App, { target: document.getElementById('app')! });

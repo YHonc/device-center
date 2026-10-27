@@ -1,0 +1,2 @@
+import test from'node:test';import assert from'node:assert/strict';import{lampNeedsCloseConfirmation,lampCanDiscardQueue}from'../src/lampCloseGuard.js';
+test('100ms防抖待发值也必须确认；通信期间不能销毁',()=>{assert.equal(lampNeedsCloseConfirmation({queued:1,busy:false,draining:false}),true);assert.equal(lampCanDiscardQueue({busy:false,draining:false}),true);assert.equal(lampCanDiscardQueue({busy:true,draining:true}),false);assert.equal(lampNeedsCloseConfirmation({queued:0,busy:false,draining:false}),false);});

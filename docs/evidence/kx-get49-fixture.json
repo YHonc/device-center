@@ -1,0 +1,255 @@
+{
+  "capturedAtUnixMs": 1792770908206,
+  "elapsedMs": 146,
+  "error": null,
+  "frames": [
+    {
+      "bytes": 20,
+      "hex": "134923000eff000000ff000000ffffff00ff0087",
+      "sequence": 0,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923010eff00ffffffffffff000000ff000086",
+      "sequence": 1,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923020e00ffffff00ff00ff00ffffffffff85",
+      "sequence": 2,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923030eff000000ff000000ffffff00ff008a",
+      "sequence": 3,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923040eff00ffffffffffff000000ff000089",
+      "sequence": 4,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923050e00ffffff00ff00ff00ffffffffff88",
+      "sequence": 5,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923060eff000000ff000000ffffff00ff008d",
+      "sequence": 6,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923070eff00ffffffffffff000000ff00008c",
+      "sequence": 7,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923080e00ffffff00ff00ff00ffffffffff8b",
+      "sequence": 8,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923090eff000000ff000000ffffff00ff0090",
+      "sequence": 9,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230a0eff00ffffffffffdacbda00ff00000f",
+      "sequence": 10,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230b0e00ffffff00ff00ff00ffffffffff8e",
+      "sequence": 11,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230c0eff000000ff000000ffffff00ff0093",
+      "sequence": 12,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230d0eff00ffffffffffff000000ff000092",
+      "sequence": 13,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230e0e00ffffff00ff00ff00ffffffffff91",
+      "sequence": 14,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349230f0eff000000ff000000ffffff00ff0096",
+      "sequence": 15,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923100eff00ffffffffffff000000ff000095",
+      "sequence": 16,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923110e00ffffff00ff00ff00ffffffffff94",
+      "sequence": 17,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923120eff000000ff000000ffffff00ff0099",
+      "sequence": 18,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923130eff00ffffffffffff000000ff000098",
+      "sequence": 19,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923140e00ffffff00ff00ff00ffffffffff97",
+      "sequence": 20,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923150eff000000ff000000ffffff00ff009c",
+      "sequence": 21,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923160eff00ffffffffffff000000ff00009b",
+      "sequence": 22,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923170e00ffffff00ff00ff00ffffffffff9a",
+      "sequence": 23,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923180eff000000ff000000ffffff00ff009f",
+      "sequence": 24,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923190eff00ffffffffffff000000ff00009e",
+      "sequence": 25,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231a0e00ffffff00ff00ff00ffffffffff9d",
+      "sequence": 26,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231b0eff000000ff000000ffffff00ff00a2",
+      "sequence": 27,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231c0eff00ffffffffffff000000ff0000a1",
+      "sequence": 28,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231d0e00ffffff00ff00ff00ffffffffffa0",
+      "sequence": 29,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231e0eff000000ff000000ffffff00ff00a5",
+      "sequence": 30,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "1349231f0eff00ffffffffffff000000ff0000a4",
+      "sequence": 31,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923200e00ffffff00ff00ff00ffffffffffa3",
+      "sequence": 32,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923210eff000000ff000000ffffff00ff00a8",
+      "sequence": 33,
+      "total": 35,
+      "yy": 14
+    },
+    {
+      "bytes": 20,
+      "hex": "134923220eff00ffffffffff0300000001c70175",
+      "sequence": 34,
+      "total": 35,
+      "yy": 14
+    }
+  ],
+  "payloadBytes": 490,
+  "requestHex": "134901000000000000000000000000000000005d",
+  "source": "native HID read-only GET49 after verified KX75 identity"
+}

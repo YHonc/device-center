@@ -1,0 +1,19 @@
+{
+  "iconPreview": "assets/icons-v2/contrast-preview.png",
+  "boundary": "No system tray runtime interaction, device SET, sleep/wake, real mapping writes, music lighting or long-running performance acceptance this round",
+  "nativeAppLaunched": false,
+  "rust": {
+    "failed": 0,
+    "scope": "Default unit/mock only; ignored hardware/cloud not run",
+    "ignored": 2,
+    "passed": 50
+  },
+  "node": {
+    "failed": 0,
+    "passed": 15
+  },
+  "installerExecuted": false,
+  "release": "Built without lifecycle-validation feature; validation markers absent",
+  "payload": "Static NSIS list/extraction: loader identical, licenses present, app differs only UNK to NSS bundle marker",
+  "physicalDeviceIO": false
+}

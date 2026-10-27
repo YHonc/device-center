@@ -1,0 +1,104 @@
+{
+  "at": "2026-10-23T15:49:10.235343+00:00",
+  "scope": "Only GET16 identity and GET8 EEPROM; no SET/wake/firmware",
+  "interface": {
+    "vid": "373b",
+    "pid": "101a",
+    "usagePage": "0xff02",
+    "usage": 2,
+    "inputReportBytes": 17,
+    "outputReportBytes": 17
+  },
+  "transactions": [
+    {
+      "command": 16,
+      "address": 0,
+      "requestedLength": 0,
+      "requestHex": "081000000000000000000000000000003d",
+      "written": 17,
+      "elapsedMs": 4.717,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "0810000000030224",
+          "redactedAfterByte": 8
+        }
+      ]
+    },
+    {
+      "command": 8,
+      "address": 0,
+      "requestedLength": 10,
+      "requestHex": "08080000000a000000000000000000003b",
+      "written": 17,
+      "elapsedMs": 4.055,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "08080000000a0154045101540055005592",
+          "redactedAfterByte": null
+        }
+      ]
+    },
+    {
+      "command": 8,
+      "address": 12,
+      "requestedLength": 8,
+      "requestHex": "080800000c080000000000000000000031",
+      "written": 17,
+      "elapsedMs": 3.892,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "080800000c08070700470f0f0037000087",
+          "redactedAfterByte": null
+        }
+      ]
+    },
+    {
+      "command": 8,
+      "address": 20,
+      "requestedLength": 8,
+      "requestHex": "0808000014080000000000000000000029",
+      "written": 17,
+      "elapsedMs": 4.029,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "0808000014081f1f00173f3f00d700007f",
+          "redactedAfterByte": null
+        }
+      ]
+    },
+    {
+      "command": 8,
+      "address": 28,
+      "requestedLength": 8,
+      "requestHex": "080800001c080000000000000000000021",
+      "written": 17,
+      "elapsedMs": 3.908,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "080800001c083f3f00d73f3f00d7000077",
+          "redactedAfterByte": null
+        }
+      ]
+    },
+    {
+      "command": 8,
+      "address": 36,
+      "requestedLength": 8,
+      "requestHex": "0808000024080000000000000000000019",
+      "written": 17,
+      "elapsedMs": 4.175,
+      "replies": [
+        {
+          "length": 17,
+          "hex": "0808000024083f3f00d73f3f00d700006f",
+          "redactedAfterByte": null
+        }
+      ]
+    }
+  ]
+}

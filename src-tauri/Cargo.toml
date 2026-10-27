@@ -1,0 +1,41 @@
+[package]
+name = "device-center"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+
+[lib]
+name = "device_center"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+lifecycle-validation = []
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-notification = "2"
+tauri-plugin-autostart = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+hidapi = "2"
+aes = "0.8"
+cbc = { version = "0.1", features = ["alloc", "std"] }
+md-5 = "0.10"
+subtle = "2.6"
+zeroize = "1"
+hex = "0.4"
+rand = "0.8"
+thiserror = "2"
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "native-tls", "cookies", "json"] }
+sha1 = "0.10"
+sha2 = "0.10"
+tokio = { version = "1", features = ["time"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Security_Cryptography", "Win32_System_Memory", "Win32_Storage_FileSystem"] }
+

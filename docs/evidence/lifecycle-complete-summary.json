@@ -1,0 +1,8 @@
+{
+  "environment": "Validation process WEBVIEW2_USER_DATA_FOLDER and DEVICE_CENTER_LIFECYCLE_ROOT restored in finally",
+  "isolation": "Separate process WebView2 user-data folder; no real HID, cloud network, device SET, account login",
+  "productionProcessAndConfigurationMetadataUnchanged": true,
+  "samplingBoundary": "Short isolated lifecycle samples; not a ten-minute idle/notification/autostart performance acceptance",
+  "lifecycle": "PASS: dirty-close cancelled, mock cloud revoked, main and compact destroyed, zero-window service survives, cache restored, compact native close routed through frontend",
+  "source": "Native lifecycle-validation compile-time feature, excluded from production"
+}

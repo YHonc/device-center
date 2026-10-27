@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Device Center",
+  "version": "0.1.0",
+  "identifier": "local.device-center.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [{ "label": "main", "title": "设备中心", "width": 1060, "height": 760, "minWidth": 780, "minHeight": 600, "decorations": false, "transparent": false, "shadow": true }],
+    "security": { "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost; style-src 'self' 'unsafe-inline'; img-src 'self' asset: data:; font-src 'self' data:" }
+  },
+  "bundle": {
+    "icon": ["icons/icon-v2.ico", "icons/app-v2-32.png", "icons/app-v2-128.png", "icons/app-v2-256.png"],
+    "active": true,
+    "targets": ["nsis"],
+    "license": "GPL-3.0-only",
+    "licenseFile": "LICENSE",
+    "resources": { "LICENSE": "LICENSE", "LICENSE-ATK": "LICENSE-ATK", "UPSTREAM.md": "UPSTREAM.md", "../THIRD_PARTY_NOTICES.md": "THIRD_PARTY_NOTICES.md" },
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true },
+      "nsis": { "installMode": "currentUser", "languages": ["SimpChinese", "English"], "displayLanguageSelector": true }
+    }
+  }
+}

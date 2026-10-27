@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{initializeSnapshot}from'../src/snapshotBootstrap.js';
+test('监听延迟注册期间的更新由注册后的缓存恢复，不提前读取旧值',async()=>{let resolve;let cache=10;const observed=[];let registered=false;const registration=new Promise(r=>resolve=r).then(()=>{registered=true;});const done=initializeSnapshot([registration],async()=>{assert.equal(registered,true);observed.push(cache);},()=>true);cache=20;assert.deepEqual(observed,[]);resolve();await done;assert.deepEqual(observed,[20]);});
+test('窗口关闭后迟到注册不再发起缓存请求',async()=>{let active=true,reads=0,resolve;const registration=new Promise(r=>resolve=r);const done=initializeSnapshot([registration],async()=>{reads++;},()=>active);active=false;resolve();await done;assert.equal(reads,0);});

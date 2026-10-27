@@ -1,0 +1,450 @@
+/* Daily controls stay separate from diagnostics. Compact view is a utility,
+   not a second dashboard. Refactoring UI §2.1, §3.6, §4.1, §8.5. */
+.diagnostic-entry{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:24px 0;border-top:1px solid var(--quiet-line);margin-top:24px}.diagnostic-entry strong{font-size:14px;font-weight:600}.diagnostic-entry p{font-size:12px;line-height:1.7;color:var(--muted);margin:8px 0 0}
+/* Compact utility, Refactoring UI §2.1 / §3.6 / §8.5: flat status rows,
+   restrained controls and no decorative cards. Designed for 320 × 320. */
+.compact-shell { height:100dvh; min-height:0; overflow:hidden; }
+.compact-shell .compact-header { height:40px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--quiet-line); }
+.compact-shell .compact-header strong { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; }
+.compact-shell .compact-header strong span { color:var(--muted); font-size:12px; font-weight:400; }
+.compact-shell .compact-header .icon-button { width:28px; height:28px; background:none; border:0; box-shadow:none; }
+.compact-shell .compact-body { height:calc(100dvh - 40px); padding:4px 12px 8px; overflow:auto; scrollbar-width:thin; }
+.compact-shell .compact-batteries { display:block; }
+.compact-shell .compact-batteries article { min-height:44px; display:grid; grid-template-columns:16px 1fr auto 48px; align-items:center; gap:8px; padding:8px 0; border:0; border-bottom:1px solid var(--quiet-line); border-radius:0; background:none; box-shadow:none; }
+.compact-shell .compact-batteries svg, .compact-lamp-heading > svg { color:var(--muted); }
+.compact-shell .compact-device-name { font-size:12px; font-weight:600; white-space:nowrap; }
+.compact-shell .compact-batteries em { font-size:12px; color:var(--muted); font-style:normal; white-space:nowrap; }
+.compact-shell .compact-batteries strong { margin:0; text-align:right; font-size:24px; font-weight:500; line-height:1; white-space:nowrap; }
+.compact-shell .compact-batteries small { margin-left:2px; font-size:12px; font-weight:400; color:var(--muted); }
+.compact-shell .compact-batteries .stale strong { color:var(--muted); }
+.compact-shell .compact-lamp { margin:0; padding:4px 0; border:0; border-bottom:1px solid var(--quiet-line); border-radius:0; background:none; box-shadow:none; }
+.compact-shell .compact-lamp-heading { display:flex; align-items:center; gap:8px; min-height:32px; margin-bottom:4px; font-size:12px; }
+.compact-shell .compact-lamp-heading > strong { font-weight:600; }
+.compact-shell .compact-lamp-state { margin-left:auto; font-size:12px; font-weight:400; color:var(--muted); white-space:nowrap; }
+.compact-shell .compact-lamp-heading .power-button { margin-left:0; width:28px; height:28px; flex-shrink:0; border-radius:8px; box-shadow:none; }
+.compact-shell .compact-slider-row { min-height:32px; display:grid; grid-template-columns:28px minmax(0,1fr) 52px; gap:8px; align-items:center; }
+.compact-shell .compact-slider-row label { font-size:12px; color:var(--muted); }
+.compact-shell .compact-slider-row output { text-align:right; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.compact-shell input[type=range] { width:100%; min-width:0; height:24px; margin:0; appearance:none; background:transparent; outline-offset:2px; }
+.compact-shell input[type=range]::-webkit-slider-runnable-track { height:4px; border-radius:4px; background:linear-gradient(to right,var(--accent) var(--range-fill,50%),var(--quiet-line) var(--range-fill,50%)); }
+.compact-shell input[type=range].temperature::-webkit-slider-runnable-track { background:linear-gradient(to right,#bd955b,#b7c7d7); }
+.compact-shell input[type=range]::-webkit-slider-thumb { appearance:none; width:12px; height:12px; border-radius:50%; margin-top:-4px; border:2px solid var(--surface); background:var(--accent); box-shadow:none; }
+.compact-shell .unavailable input[type=range]::-webkit-slider-runnable-track { background:var(--quiet-line); }
+.compact-shell .unavailable input[type=range]::-webkit-slider-thumb { visibility:hidden; }
+.compact-shell .unavailable input[type=range]::-moz-range-track { height:4px; border-radius:4px; background:var(--quiet-line); }
+.compact-shell .unavailable input[type=range]::-moz-range-progress { background:var(--quiet-line); }
+.compact-shell .unavailable input[type=range]::-moz-range-thumb { visibility:hidden; }
+.compact-shell .compact-open { display:flex; justify-content:space-between; width:100%; min-height:32px; padding:4px 0; margin-top:4px; font-size:12px; font-weight:400; border:0; border-radius:4px; background:none; box-shadow:none; color:var(--muted); }
+.compact-shell .compact-open:hover:not(:disabled) { color:var(--ink); }
+.compact-shell .compact-open > span:last-child { display:flex; align-items:center; gap:4px; }
+.shell:not(.compact-shell) input[type=range].temperature { appearance:none; background:transparent; height:16px; }
+.shell:not(.compact-shell) input[type=range].temperature::-webkit-slider-runnable-track { height:5px; border-radius:4px; background:linear-gradient(to right,#bd955b,#b7c7d7); }
+.shell:not(.compact-shell) input[type=range].temperature::-webkit-slider-thumb { appearance:none; width:14px; height:14px; margin-top:-4.5px; border-radius:50%; border:2px solid var(--surface); background:var(--accent); }
+.overlay-surface:has(> .preset-manager) { width:min(480px,calc(100vw - 24px)); }
+.compact-shell .compact-open:disabled { opacity:.7; }
+.compact-shell .compact-error { margin:8px 0; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+
+/* Full-page refinement, Refactoring UI §2.1 / §3.6 / §4.4 / §8.5.
+   Confirmed readings lead; supporting metadata stays readable. Existing palette
+   and spacing 8/12/16/24/32 remain the source of truth. Motion lives in motion.css. */
+.shell {
+  --text-small: 12px;
+  --text-caption: 12px;
+  --focus-ring: var(--accent);
+  min-height: 0;
+}
+.workspace, .dashboard, .compact-body { min-height: 0; }
+.sidebar { flex-shrink: 0; }
+.dashboard { width: 100%; scrollbar-width: thin; scrollbar-color: var(--quiet-line) transparent; }
+.page-heading > div, .model-name { min-width: 0; }
+.page-subtitle { max-width: 35em; }
+.section-label { font-weight: 600; letter-spacing: .02em; }
+.section-label > span:last-child { font-weight: 400; letter-spacing: .04em; }
+.device-card, .lamp-card { border-color: var(--quiet-line); }
+.device-card-top > .status { flex-shrink: 0; }
+.model-name > span { line-height: 1.5; }
+.peripheral-data { gap: var(--space-2); }
+.battery { flex-shrink: 0; }
+.battery strong, .sliders strong, .compact-batteries strong { font-variant-numeric: tabular-nums; }
+.device-card .battery-meta {
+  min-width: 0;
+  margin-left: 0;
+  max-width: 58%;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.device-actions { align-items: center; }
+.device-actions .text-button { min-height: 36px; }
+.device-actions .icon-button { flex-shrink: 0; }
+.lamp-feedback, .connection-strip p, .app-footer { font-size: var(--text-caption); }
+.connection-strip { gap: var(--space-2); }
+.connection-strip > div:last-child { min-width: 0; }
+.preview-banner { align-items: flex-start; }
+.preview-banner svg { margin-top: 2px; }
+.notice span, .compact-error, .message.error { overflow-wrap: anywhere; }
+
+/* Focus remains visible on translucent surfaces, including radios and toggles. */
+.shell :is(button, input, select, a):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.sidebar button:focus-visible { outline-offset: 3px; }
+.window-controls button:focus-visible { outline-offset: -4px; }
+.shell input[type=range]:focus-visible { border-radius: var(--radius-control); }
+.shell :is(button, input, select):disabled { opacity: .5; }
+
+/* Keep every drawer and connection state inside its own scroll surface. */
+.overlay-surface { max-width: 100%; }
+.drawer .overlay-surface { width: min(416px, 100%); }
+.drawer-heading, .settings-header { gap: var(--space-3); align-items: flex-start; }
+.drawer-heading .icon-button, .settings-header .icon-button { flex-shrink: 0; }
+.drawer-description, .settings-intro, .modal-description { max-width: 35em; }
+.drawer-content > .drawer-description:last-child { margin-top: var(--space-4); }
+.preference-row { gap: var(--space-3); }
+.preference-row > div { min-width: 0; }
+.shell .tray-preferences h3 { font-weight: 600; }
+.shell .tray-preferences p { font-size: var(--text-small); }
+.shell .tray-options label { border-color: var(--quiet-line); border-radius: var(--radius-control); }
+.shell .tray-options label:has(input:checked) { background: var(--surface); border-color: var(--accent); }
+.shell .tray-options label:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.shell .tray-options strong { font-size: var(--text-small); font-weight: 600; }
+.shell .tray-options small { font-size: var(--text-caption); line-height: 1.6; }
+.diagnostic-entry { align-items: flex-start; }
+.diagnostic-entry > div { min-width: 0; }
+.diagnostic-entry button { flex-shrink: 0; }
+.manual-form input { width: 100%; min-width: 0; }
+.interface-row code { overflow-wrap: anywhere; }
+.settings-panel > .connection-methods { flex-wrap: wrap; gap: 4px; }
+.settings-panel > .connection-methods button { flex: 1 1 auto; padding: 8px 12px; min-height: 36px; white-space: nowrap; }
+
+@media (min-width: 900px) and (max-height: 780px) {
+  .dashboard-grid { gap: var(--space-4); }
+  .device-card { padding-bottom: 8px; }
+  .peripheral-data { padding-top: 16px; }
+  .lamp-card { min-height: 0; }
+}
+@media (min-width: 541px) and (max-width: 899px) {
+  .device-card-top { align-items: flex-start; }
+  .device-card-top > .status { margin-left: 48px; }
+  .device-visual { top: 64px; right: 12px; width: 80px; opacity: .3; }
+  .device-card .battery-meta { max-width: 100%; }
+  .peripheral-data { flex-wrap: wrap; gap: 8px; padding-top: 24px; }
+}
+@media (max-width: 540px) {
+  .dashboard { padding: 20px 16px; }
+  .page-heading { gap: 12px; margin-bottom: 16px; }
+  .page-heading .eyebrow { display: none; }
+  .page-heading h1 { font-size: 24px; }
+  .page-subtitle { margin-top: 8px; }
+  .device-visual { display: none; }
+  .device-card { min-height: 0; }
+  .peripheral-data { padding: 20px 0 12px; }
+  .device-card .battery-meta { max-width: 60%; font-size: var(--text-caption); }
+  .device-card .battery-meta small { font-size: var(--text-caption); }
+  .device-actions { gap: 4px; }
+  .device-actions > .text-button { padding: 4px; }
+  .device-actions > .text-button:nth-child(2) { margin-left: auto; }
+  .lamp-visual { height: 72px; }
+  .lamp-rod { top: 20px; }
+  .lamp-stand { top: 15px; }
+  .light-cone { top: 27px; height: 40px; }
+  .desk-line { top: 67px; }
+  .connection-strip { align-items: flex-start; flex-wrap: nowrap; }
+  .connection-symbol { flex-shrink: 0; }
+  .app-footer { gap: 8px; }
+  .diagnostic-entry { flex-wrap: wrap; gap: 12px; }
+  .drawer .overlay-surface { border-radius: 16px; }
+}
+@media (max-width: 380px) {
+  .model-icon { width: 32px; height: 32px; }
+  .model-name h2 { font-size: 12px; }
+  .device-card-top > .status { font-size: 12px; padding: 4px 6px; }
+  .device-card .battery-meta { max-width: 58%; }
+  .shell .tray-options { grid-template-columns: 1fr; }
+}
+
+/* Refactoring UI §2.1 / §3.6 / §8.5: calm workspace, compact device summaries.
+   Basic settings expand at their device; advanced editing gets a wide modal. */
+.shell [hidden] { display:none!important; }
+.shell:not(.compact-shell) .titlebar { height:44px; padding-left:20px; background:var(--surface); }
+.shell:not(.compact-shell) .workspace { height:calc(100% - 44px); }
+.shell:not(.compact-shell) .sidebar { width:56px; padding:20px 0; background:var(--surface); border-right:1px solid var(--quiet-line); }
+.shell:not(.compact-shell) .sidebar button { width:36px; height:36px; border-radius:8px; }
+.shell:not(.compact-shell) .sidebar .nav-active { border-color:transparent; box-shadow:none; color:var(--accent); }
+.shell:not(.compact-shell) .dashboard { padding:24px; max-width:1280px; }
+.shell:not(.compact-shell) .page-heading { margin-bottom:24px; }
+.shell:not(.compact-shell) .page-heading h1 { font-size:24px; font-weight:600; }
+.shell:not(.compact-shell) .page-subtitle { margin-top:8px; font-size:14px; line-height:1.5; }
+.shell:not(.compact-shell) .primary, .shell:not(.compact-shell) .secondary { min-height:36px; padding:8px 12px; border-radius:12px; }
+.shell:not(.compact-shell) .secondary { background:var(--surface); box-shadow:none; border-color:var(--quiet-line); }
+.shell:not(.compact-shell) .dashboard-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:start; }
+.shell:not(.compact-shell) .section-label { margin-bottom:12px; font-size:12px; }
+.shell:not(.compact-shell) .section-label > span:last-child { font-size:12px; }
+.shell:not(.compact-shell) .peripherals { gap:16px; }
+.shell:not(.compact-shell) .peripherals .section-label { margin-bottom:0; }
+.shell:not(.compact-shell) .device-card, .shell:not(.compact-shell) .lamp-card { min-height:0; padding:16px; border:1px solid var(--quiet-line); border-radius:16px; background:var(--surface); box-shadow:0 1px 3px var(--shadow); }
+.shell:not(.compact-shell) .device-card-top, .shell:not(.compact-shell) .lamp-header { gap:12px; flex-wrap:nowrap; }
+.shell:not(.compact-shell) .model-icon { width:36px; height:36px; border:0; border-radius:8px; color:var(--muted); background:var(--control); }
+.shell:not(.compact-shell) .model-name h2 { font-size:16px; font-weight:600; margin-bottom:4px; }
+.shell:not(.compact-shell) .model-name > span { font-size:12px; }
+.shell:not(.compact-shell) .device-settings-entry { margin-left:auto; flex-shrink:0; gap:6px; font-size:12px; }
+.shell:not(.compact-shell) .peripheral-data { min-height:0; padding:16px 0 12px; gap:12px; align-items:center; flex-wrap:nowrap; }
+.shell:not(.compact-shell) .battery { display:flex; align-items:baseline; gap:4px; }
+.shell:not(.compact-shell) .battery strong { font-size:32px; font-weight:500; line-height:1.1; }
+.shell:not(.compact-shell) .battery > span { font-size:12px; }
+.shell:not(.compact-shell) .device-card .battery-meta { flex:1; max-width:none; font-size:12px; line-height:1.5; }
+.shell:not(.compact-shell) .battery-meta small { font-size:12px; }
+.shell:not(.compact-shell) .status { padding:3px 6px; font-size:12px; white-space:nowrap; background:var(--control); border:0; }
+.shell:not(.compact-shell) .battery-track { height:3px; margin:0; background:var(--quiet-line); }
+.shell:not(.compact-shell) .device-actions { margin-top:8px; padding:0; min-height:36px; }
+.shell:not(.compact-shell) .device-actions .text-button { min-height:36px; padding:4px 0; font-size:12px; }
+.shell:not(.compact-shell) .device-actions .official-entry { margin-left:auto; margin-right:0; }
+.shell:not(.compact-shell) .power-button { width:32px; height:32px; border-radius:8px; box-shadow:none; }
+.shell:not(.compact-shell) .light-caption { margin:16px 0; }
+.shell:not(.compact-shell) .sliders label, .shell:not(.compact-shell) .sliders strong { font-size:14px; }
+.shell:not(.compact-shell) .sliders input[type=range] { margin:8px 0 20px; }
+.shell:not(.compact-shell) .range-labels { font-size:12px; }
+.shell:not(.compact-shell) .light-caption { gap:8px; flex-wrap:wrap; }
+.shell:not(.compact-shell) .light-caption > span:last-child { font-size:12px; }
+.lamp-guidance { color:var(--muted); line-height:1.5; }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range] { appearance:none; height:16px; background:transparent; }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range]::-webkit-slider-runnable-track { height:4px; border-radius:4px; background:var(--quiet-line); }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range]::-webkit-slider-thumb { appearance:none; width:14px; height:14px; visibility:hidden; }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range]::-moz-range-track { height:4px; border-radius:4px; background:var(--quiet-line); }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range]::-moz-range-progress { background:var(--quiet-line); }
+.shell:not(.compact-shell) .sliders.unavailable input[type=range]::-moz-range-thumb { visibility:hidden; }
+.shell:not(.compact-shell) .lamp-feedback { min-height:0; margin:12px 0; font-size:12px; }
+.shell:not(.compact-shell) .lamp-feedback:empty { display:none; }
+.shell:not(.compact-shell) .lamp-actions { margin-top:16px; padding-top:12px; gap:12px; flex-wrap:wrap; }
+.shell:not(.compact-shell) .app-footer { margin-top:16px; font-size:12px; }
+.shell:not(.compact-shell) .preview-banner { padding:8px 12px; margin-bottom:16px; font-size:12px; background:var(--control); border:1px solid var(--quiet-line); border-radius:8px; }
+.shell .inline-device-settings { margin-top:12px; border-top:1px solid var(--quiet-line); }
+.shell .inline-device-settings .settings-panel { padding:16px 0 0; background:none; border:0; border-radius:0; box-shadow:none; backdrop-filter:none; }
+.shell .inline-device-settings .settings-header { margin:0; display:flex; align-items:center; justify-content:space-between; }
+.inline-device-settings h3 { font-size:12px; margin:0; font-weight:600; }
+.inline-device-settings .settings-empty { margin:12px 0; padding:0; font-size:12px; }
+.inline-device-settings .settings-empty p { font-size:12px; margin:8px 0; }
+.shell .inline-device-settings .setting-field { padding:16px 0; gap:12px; }
+.shell .inline-device-settings .setting-field label { font-size:12px; }
+.shell .inline-device-settings .field-control { max-width:48%; }
+.shell .inline-device-settings .settings-actions .primary { width:auto; margin-top:0; }
+.advanced-entries { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.advanced-entries > span { width:100%; font-size:12px; color:var(--muted); }
+.shell .advanced-entries .secondary, .shell .advanced-entries .text-button { font-size:12px; }
+.overlay-surface:has(> .advanced-settings) { width:min(820px, calc(100vw - 32px)); }
+.advanced-settings { padding:24px; min-height:320px; }
+.advanced-settings .settings-header { display:flex; justify-content:space-between; }
+.advanced-settings .settings-header h2 { font-size:24px; }
+.advanced-settings .connection-methods { flex-wrap:wrap; }
+.advanced-settings .connection-methods button { min-height:36px; flex:1 1 auto; white-space:nowrap; }
+.preferences-page { position:absolute; top:44px; left:56px; right:0; bottom:0; overflow:auto; background:var(--surface); }
+.preferences-page .drawer-content { max-width:760px; margin:0 auto; padding:24px 32px; }
+.preferences-page .drawer-heading { margin-bottom:24px; }
+.preferences-page .drawer-heading h2 { font-size:24px; }
+.preferences-page .drawer-heading h2:focus { outline:none; }
+.preferences-page .drawer-heading .drawer-description { margin:8px 0 0; font-size:14px; line-height:1.5; }
+.preference-group { margin-top:24px; padding-top:24px; border-top:1px solid var(--quiet-line); }
+.preference-group h3 { margin:0 0 8px; font-size:12px; color:var(--muted); font-weight:600; }
+.preferences-page .preference-row { padding:12px 0; border:0; }
+.preferences-page .preference-row p { margin-top:4px; line-height:1.5; }
+.preferences-page .preference-row input:checked { background:var(--primary-bg); }
+.preferences-page .preference-row input:checked:before { background:var(--on-primary); }
+.preferences-page .preference-note { font-size:12px; line-height:1.5; color:var(--muted); margin:8px 0 0; }
+.preferences-page .tray-preferences { margin:0; padding:0; border:0; }
+.preferences-page .diagnostic-entry { margin:0; padding:0; border:0; }
+.preference-error { margin:8px 0; padding:12px; color:var(--danger); background:var(--danger-soft); border-radius:12px; }
+.preference-error p { margin:0 0 4px; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+.preferences-page .tray-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
+@media (min-width:900px) and (max-height:680px) {
+  .shell:not(.compact-shell) .dashboard { padding:16px 24px; }
+  .shell:not(.compact-shell) .page-heading { margin-bottom:16px; }
+  .shell:not(.compact-shell) .page-heading h1 { font-size:24px; }
+  .shell:not(.compact-shell) .preview-banner { margin-bottom:12px; }
+  .shell:not(.compact-shell) .device-card, .shell:not(.compact-shell) .lamp-card { padding:12px 16px; }
+  .shell:not(.compact-shell) .peripheral-data { padding-top:12px; }
+  .shell:not(.compact-shell) .light-caption { margin:12px 0; }
+  .shell:not(.compact-shell) .sliders input[type=range] { margin:8px 0 12px; }
+  .shell:not(.compact-shell) .lamp-actions { margin-top:12px; padding-top:12px; }
+  .shell:not(.compact-shell) .app-footer { margin-top:12px; }
+}
+@media (max-width:899px) {
+  .shell:not(.compact-shell) .dashboard-grid { grid-template-columns:1fr; }
+  .shell:not(.compact-shell) .peripherals { display:flex; }
+}
+@media (max-width:540px) {
+  .shell:not(.compact-shell) .dashboard { padding:20px 16px; }
+  .shell:not(.compact-shell) .sidebar { width:48px; }
+  .shell:not(.compact-shell) .device-card, .shell:not(.compact-shell) .lamp-card { padding:12px; }
+  .shell:not(.compact-shell) .peripheral-data { gap:8px; flex-wrap:wrap; }
+  .shell:not(.compact-shell) .model-name h2 { font-size:14px; }
+  .shell:not(.compact-shell) .model-icon { width:28px; height:32px; }
+  .shell:not(.compact-shell) .device-card-top { gap:8px; flex-wrap:wrap; }
+  .shell:not(.compact-shell) .device-settings-entry { padding:6px 8px; }
+  .shell .inline-device-settings .setting-field { flex-direction:column; }
+  .shell .inline-device-settings .field-control { max-width:100%; }
+  .preferences-page { left:48px; }
+  .preferences-page .drawer-content { padding:20px 16px; }
+  .preferences-page .tray-options { grid-template-columns:1fr; }
+  .advanced-settings { padding:20px 16px; }
+}
+
+/* Shared material contract, 2026-10-24. Refactoring UI §2.1 / §5.6 / §6.1:
+   confirmed readings keep the strongest contrast; controls are secondary.
+   Existing blue/grey palette, one top highlight and one restrained elevation.
+   This final layer owns materials; earlier layers retain layout responsibility. */
+.shell {
+  --primary-bg: #246ac3;
+  --primary-hover: #1c59a8;
+  --on-primary: #fff;
+  --success: #23775d;
+  --success-soft: #23775d12;
+  --warning: #79591e;
+  --warning-soft: #b79b5b18;
+  --danger: #9d3f32;
+  --danger-soft: #9d3f3210;
+  --positive: var(--success);
+  --error: var(--danger);
+  --glass-canvas: radial-gradient(ellipse at 100% 0, #bdcfef80, transparent 58%),
+    radial-gradient(ellipse at 0 100%, #aadad459, transparent 62%), #e4eaf1;
+  --glass-panel: rgb(244 247 251 / .82);
+  --glass-chrome: rgb(244 247 251 / .62);
+  --glass-overlay: rgb(244 247 251 / .95);
+  --glass-edge: rgb(255 255 255 / .8);
+  --glass-highlight: rgb(255 255 255 / .9);
+  --glass-tint: linear-gradient(135deg, rgb(255 255 255 / .22), transparent 55%);
+  --glass-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 2px 4px rgb(29 53 83 / .03), 0 8px 24px rgb(29 53 83 / .06);
+  --glass-overlay-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 8px 24px rgb(29 53 83 / .1), 0 24px 64px rgb(29 53 83 / .16);
+  --glass-blur: 16px;
+  --glass-scrim: rgb(16 23 34 / .28);
+  --control: rgb(255 255 255 / .66);
+  --muted: #53647d;
+  --quiet-line: rgb(58 83 115 / .14);
+}
+.shell.dark {
+  --primary-bg: #70acff;
+  --primary-hover: #91bfff;
+  --on-primary: #172339;
+  --success: #73d9b3;
+  --success-soft: #73d9b312;
+  --warning: #e6c987;
+  --warning-soft: #b79b5b18;
+  --danger: #f0b2a7;
+  --danger-soft: #f0b2a714;
+  --glass-canvas: radial-gradient(ellipse at 100% 0, #1d3f6380, transparent 58%),
+    radial-gradient(ellipse at 0 100%, #12474659, transparent 62%), #101722;
+  --glass-panel: rgb(27 37 52 / .84);
+  --glass-chrome: rgb(27 37 52 / .64);
+  --glass-overlay: rgb(27 37 52 / .96);
+  --glass-edge: rgb(223 238 255 / .15);
+  --glass-highlight: rgb(223 238 255 / .16);
+  --glass-tint: linear-gradient(135deg, rgb(223 238 255 / .055), transparent 55%);
+  --glass-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 2px 4px rgb(0 0 0 / .06), 0 8px 24px rgb(0 0 0 / .14);
+  --glass-overlay-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 8px 24px rgb(0 0 0 / .18), 0 24px 64px rgb(0 0 0 / .24);
+  --glass-scrim: rgb(7 14 29 / .52);
+  --control: rgb(223 238 255 / .075);
+  --muted: #a6b4ca;
+  --quiet-line: rgb(223 238 255 / .12);
+}
+.shell.solid {
+  --success-soft: #e5f0eb;
+  --warning-soft: #f3eddf;
+  --danger-soft: #f5e9e6;
+  --glass-canvas: #e4eaf1;
+  --glass-panel: #f4f7fb;
+  --glass-chrome: #e9f0f9;
+  --glass-overlay: #f4f7fb;
+  --glass-tint: linear-gradient(transparent, transparent);
+  --glass-blur: 0px;
+  --control: #fff;
+}
+.shell.solid.dark {
+  --success-soft: #203c3b;
+  --warning-soft: #3b352b;
+  --danger-soft: #3b3036;
+  --glass-canvas: #101722;
+  --glass-panel: #1b2534;
+  --glass-chrome: #202d3d;
+  --glass-overlay: #1b2534;
+  --control: #26384f;
+}
+.shell, .shell.dark, .shell.solid, .shell.compact-shell {
+  --surface: var(--glass-panel);
+  --overlay: var(--glass-overlay);
+  --line: var(--glass-edge);
+  background: var(--glass-canvas);
+}
+
+/* No backdrop filters on cards or stacked reading layers. */
+.shell:not(.compact-shell) :is(.titlebar, .sidebar),
+.shell.compact-shell .compact-header {
+  background: var(--glass-tint), var(--glass-chrome);
+  border-color: var(--quiet-line);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
+.shell:not(.compact-shell) :is(.device-card, .lamp-card) {
+  background: var(--glass-tint), var(--glass-panel);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: none;
+}
+.shell:not(.compact-shell) .preferences-page {
+  background: var(--glass-tint), var(--glass-panel);
+}
+.shell:not(.compact-shell) :is(.secondary, .power-button),
+.shell:not(.compact-shell) .sidebar .nav-active {
+  background: var(--glass-tint), var(--control);
+  border-color: var(--quiet-line);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 1px 3px var(--shadow);
+}
+.shell :is(.secondary, .power-button):hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.shell :is(.power-button.powered, .status.online) {
+  color: var(--positive);
+}
+.shell:not(.compact-shell) .preview-banner,
+.shell :is(.change-preview, .discard-prompt) {
+  background: var(--control);
+  border-color: var(--quiet-line);
+}
+.shell .notice { background: var(--glass-panel); border-color: var(--quiet-line); padding:12px; font-size:12px; line-height:1.5; }
+.shell .primary { background:var(--primary-bg); color:var(--on-primary); border-color:transparent; }
+.shell .primary:hover:not(:disabled) { background:var(--primary-hover); }
+.shell .compact-error, .shell .message.error { color:var(--danger); font-size:12px; line-height:1.6; }
+.shell.compact-shell .compact-body { background: var(--glass-tint); }
+.shell.compact-shell .compact-open { margin-top: 4px; }
+
+/* The same surface recipe also applies to independently hosted settings dialogs. */
+.shell dialog::backdrop { background: var(--glass-scrim); backdrop-filter: none; }
+.shell .overlay-surface {
+  background: var(--glass-tint), var(--glass-overlay);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-overlay-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+}
+.shell .connect-modal h2 { font-size:24px; }
+.shell .connect-modal .modal-description { font-size:14px; line-height:1.5; }
+.shell .connection-methods button { min-height:36px; border-radius:12px; font-size:12px; }
+.shell .manual-form label, .shell .manual-form input { font-size:14px; }
+.shell .manual-form input { border-radius:12px; }
+.shell .manual-form p { font-size:12px; line-height:1.5; }
+.shell .mi-heading p, .shell .mi-boundary, .shell .mi-warnings, .shell .mi-start > label { font-size:12px!important; }
+.shell .overlay-surface > .device-workspace {
+  background: transparent;
+}
+.shell .device-workspace :is(.workspace-header, .workspace-navigation) {
+  background: var(--glass-tint), var(--glass-chrome);
+  border-color: var(--quiet-line);
+}
+.shell .device-workspace .workspace-content {
+  background: transparent;
+}
+.shell .device-workspace .workspace-content .settings-actions {
+  background: var(--glass-overlay);
+  border-color: var(--quiet-line);
+}
+.shell.solid .overlay-surface { backdrop-filter: none; }

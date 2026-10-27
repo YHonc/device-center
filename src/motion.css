@@ -1,0 +1,43 @@
+:root {
+  --duration-quick: 150ms;
+  --duration-fast: 250ms;
+  --duration-medium: 350ms;
+  --duration-slow: 400ms;
+  --ease-smooth-out: cubic-bezier(.22, 1, .36, 1);
+}
+/* Overlay owns surface motion; settings never animate the same surface twice. */
+.t-panel-slide { opacity: 1; }
+.t-panel-slide[data-open="false"] { visibility: hidden; pointer-events: none; }
+
+/* Refactoring UI §8: only hierarchy changes and actionable controls move.
+   Keep cards stable while readings arrive; no idle loop or persistent layer hints. */
+.shell .compact-body { animation: content-enter var(--duration-quick) ease-out; }
+
+.shell button {
+  transition: background-color var(--duration-quick) ease-out,
+    border-color var(--duration-quick) ease-out,
+    color var(--duration-quick) ease-out;
+}
+.shell button:active:not(:disabled) { transform: none; }
+.shell .preference-row input:before {
+  transition: transform var(--duration-fast) var(--ease-smooth-out),
+    background-color var(--duration-quick) ease-out;
+}
+.shell .battery-track span { transition: width var(--duration-fast) var(--ease-smooth-out); }
+.shell .lamp-visual .light-cone { transition: opacity var(--duration-fast) ease-out; }
+.shell.compact-shell input[type=range]::-webkit-slider-thumb {
+  transition: box-shadow var(--duration-quick) ease-out,
+    transform var(--duration-quick) var(--ease-smooth-out);
+}
+.shell dialog[inert] { pointer-events: none; }
+@keyframes content-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shell *, .shell *::before, .shell *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+dialog{position:fixed;inset:0;width:100vw;max-width:none;height:100vh;max-height:none;border:0;padding:24px;background:transparent;color:var(--ink);margin:0;overflow:auto}dialog[open]{display:flex;align-items:center;justify-content:center}dialog::backdrop{background:#070e1d80;backdrop-filter:blur(7px)}.overlay-surface{background:color-mix(in srgb,var(--overlay) 94%,transparent);border:1px solid var(--line);border-radius:22px;box-shadow:inset 0 1px 0 #ffffff22,0 30px 100px #0005;width:480px;max-width:100%;max-height:calc(100vh - 48px);overflow:auto;backdrop-filter:blur(16px);animation:none}.drawer[open]{justify-content:flex-end;padding:12px}.drawer .overlay-surface{width:400px;height:100%;max-height:100%;border-radius:18px;animation:none}.settings-clip{overflow:hidden}.settings-panel{padding:26px}.settings-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.settings-header h2{font-size:21px;line-height:1.5;margin:0}.settings-header .secondary{padding:4px 8px;min-height:29px;font-size:10px}.settings-intro{font-size:12px;line-height:1.9;color:var(--muted);margin:18px 0}.settings-empty{padding:32px 0;color:var(--muted);font-size:13px;line-height:1.9}.settings-empty strong{color:var(--ink);font-size:14px;font-weight:500}.settings-empty p{font-size:12px}.settings-fields{display:flex;flex-direction:column}.setting-field{display:flex;justify-content:space-between;gap:20px;padding:21px 0;border-bottom:1px solid var(--quiet-line)}.setting-field label{font-size:13px;font-weight:500}.setting-field p,.unavailable{font-size:10px;line-height:1.8;color:var(--muted);margin:7px 0;display:block}.field-control{width:125px;flex-shrink:0;max-width:45%;text-align:right}.field-control input[type=number],.field-control select{width:100%;background:var(--control);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px;font-size:12px}.field-control small{font-size:9px;color:var(--muted);display:block;margin-top:8px}.change-preview{margin-top:20px;padding:16px;background:#70acff0d;border:1px solid #70acff20;border-radius:12px;font-size:11px}.change-preview p{display:flex;justify-content:space-between;gap:10px;margin:12px 0 0}.change-preview p>span{font-variant-numeric:tabular-nums;color:var(--muted)}.settings-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:22px}.settings-actions>span{width:100%;color:var(--muted);font-size:10px;margin-bottom:5px}.settings-actions button{font-size:11px;padding:8px 10px}.settings-success{font-size:12px;color:var(--positive)}@media(prefers-reduced-motion:reduce){.overlay-surface,.drawer .overlay-surface{animation:none}.settings-clip{transition:none!important}}@media(max-width:500px){dialog{padding:12px}.overlay-surface{max-height:calc(100vh - 24px);border-radius:18px}.drawer[open]{padding:7px}.settings-panel{padding:22px}}

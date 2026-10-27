@@ -1,0 +1,8 @@
+Use case: logo-brand
+Asset type: original Windows desktop application icon for 微光 Device Center.
+Primary request: Create one original elegant abstract emblem: a thick open circular halo crossed by a short rising luminous beam. The gap and beam quietly suggest a connected device and battery energy without depicting multiple gadgets.
+Style: premium liquid glass, exceptionally simple and readable silhouette, restrained rounded geometry, subtle dimensional translucent edges.
+Palette: deep navy blue body, luminous cyan edge, faint lavender highlight.
+Composition: single centered freestanding mark, square 1024x1024 canvas, generous clear padding, occupies about 76 percent of width. No rounded-square tile behind it.
+Background: genuinely transparent alpha, no checkerboard drawing, no opaque backdrop, no cast shadow outside the mark.
+Constraints: no words, letters, numbers, text, logos, trademarks, watermark, device collage, keyboard, mouse, headset, or tiny interface details. Exactly one cohesive original emblem, clean edges suitable for a Windows application icon at 32px.
